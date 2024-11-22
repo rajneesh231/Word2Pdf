@@ -3,7 +3,7 @@ const fileUpload = document.getElementById('fileUpload');
 const checkbox = document.getElementById('enablePassword');
 const passwordInput = document.getElementById('passwordInput');
 
-fileUpload.addEventListener('change', function() {
+fileUpload.addEventListener('change', function () {
     const file = this.files[0];
     if (file && !file.name.endsWith('.docx')) {
         alert('Please upload only .docx files');
@@ -11,21 +11,21 @@ fileUpload.addEventListener('change', function() {
     }
 });
 
-checkbox.addEventListener('change', function() {
+checkbox.addEventListener('change', function () {
     passwordInput.disabled = !this.checked;
     if (!this.checked) {
         passwordInput.value = '';
     }
 });
 
-form.addEventListener('submit', async function(e) {
+form.addEventListener('submit', async function (e) {
     e.preventDefault();
-    
+
     if (!fileUpload.files[0]) {
         alert('Please select a file to convert');
         return;
     }
-    
+
     if (checkbox.checked && (!passwordInput.value || passwordInput.value.length < 6)) {
         alert('Please enter a password with at least 6 characters');
         return;
@@ -33,6 +33,7 @@ form.addEventListener('submit', async function(e) {
 
     const formData = new FormData();
     formData.append('file', fileUpload.files[0]);
+    alert('Please wait, Download for your converted file will begin shortly.')
     if (checkbox.checked) {
         formData.append('password', passwordInput.value); // Appending password here
     }
@@ -48,7 +49,7 @@ form.addEventListener('submit', async function(e) {
 
         // Create a blob from the PDF file
         const blob = await response.blob();
-        
+
         // Create a download link and trigger it
         const downloadUrl = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
@@ -58,7 +59,7 @@ form.addEventListener('submit', async function(e) {
         link.click();
         document.body.removeChild(link);
         window.URL.revokeObjectURL(downloadUrl);
-        
+
     } catch (error) {
         alert('Error converting file: ' + error.message);
     }
