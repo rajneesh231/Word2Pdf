@@ -33,7 +33,7 @@ jobs:
       # Build Docker image
       - name: Build Docker image
         run: |
-          docker build -t word2pdf:${{ github.sha }} .
+          docker build -t word2pdf:latest .
         
       # Login to Docker Hub (or another registry) and push the image
       - name: Log in to Docker Hub
@@ -44,6 +44,6 @@ jobs:
       
       - name: Push Docker image
         run: |
-          docker tag word2pdf:${{ github.sha }} ${{ secrets.DOCKER_USERNAME }}/word2pdf:${{ github.sha }}
-          docker push ${{ secrets.DOCKER_USERNAME }}/word2pdf:${{ github.sha }}
+          docker tag word2pdf:latest ${{ secrets.DOCKER_USERNAME }}/word2pdf:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/word2pdf:latest
 
