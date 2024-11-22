@@ -2,6 +2,24 @@ const form = document.querySelector('form');
 const fileUpload = document.getElementById('fileUpload');
 const checkbox = document.getElementById('enablePassword');
 const passwordInput = document.getElementById('passwordInput');
+function validateDocx(file) {
+    return file.arrayBuffer() // Read the file as an ArrayBuffer
+        .then((arrayBuffer) => JSZip.loadAsync(arrayBuffer)) // Load it as a ZIP file
+        .then((zip) => {
+            // Check for required .docx file structure
+            if (!zip.files['[Content_Types].xml']) {
+                throw new Error('Invalid .docx file structure');
+            }
+            // Return true if validation passes
+            return true;
+        })
+        .catch((error) => {
+            // Return false if the file is invalid or corrupted
+            console.error(error);
+            return false;
+        });
+}
+
 
 fileUpload.addEventListener('change', function () {
     const file = this.files[0];
@@ -9,6 +27,14 @@ fileUpload.addEventListener('change', function () {
         alert('Please upload only .docx files');
         this.value = '';
     }
+    validateDocx(file).then((isValid) => {
+        if (!isValid) {
+            alert('The uploaded .docx file is corrupted or invalid. Please upload a valid file.');
+            this.value = ''; // Clear the file input
+        } else {
+            alert('File is valid and ready for upload.');
+        }
+    });
 });
 
 checkbox.addEventListener('change', function () {
@@ -59,6 +85,8 @@ form.addEventListener('submit', async function (e) {
         link.click();
         document.body.removeChild(link);
         window.URL.revokeObjectURL(downloadUrl);
+        form.reset();
+        passwordInput.disabled = true;
 
     } catch (error) {
         alert('Error converting file: ' + error.message);
