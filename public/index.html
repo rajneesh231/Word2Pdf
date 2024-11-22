@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOCX to PDF Converter</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="converter-container">
+            <div class="header">
+                <h1>DOCX to PDF Converter</h1>
+                <p class="text-muted">Convert your Word documents to PDF format securely</p>
+            </div>
+
+            <form enctype="multipart/form-data">
+                <div class="form-group">
+                    <div class="file-upload">
+                        <label for="fileUpload" class="form-label">
+                            <i class="fas fa-cloud-upload-alt"></i> Choose DOCX File
+                        </label>
+                        <input type="file" class="form-control" id="fileUpload" accept=".docx">
+                        <small class="text-muted">Only .docx files are supported</small>
+                    </div>
+                </div>
+
+                <div class="checkbox-wrapper">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="enablePassword">
+                        <label class="form-check-label" for="enablePassword">
+                            Protect PDF with Password
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="passwordInput" class="form-label">PDF Password</label>
+                    <input type="password" class="form-control" id="passwordInput" placeholder="Enter password for PDF"
+                        disabled>
+                    <small class="text-muted">Password must be at least 6 characters long</small>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        Convert to PDF
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div>
+            <p style="font-size: x-large;"><span style="color: red;font-size: xx-large;">Note: </span>Please don't worry your files are not saved on server and deleted after conversion or encryption.</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/your-font-awesome-kit.js"></script>
+    <script src="index.js"></script>
+</body>
+
+</html>
