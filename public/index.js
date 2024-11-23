@@ -3,7 +3,8 @@ const fileUpload = document.getElementById('fileUpload');
 const checkbox = document.getElementById('enablePassword');
 const passwordInput = document.getElementById('passwordInput');
 const btns = document.getElementById('btnsubmit');
-const al = document.getElementById('alert');
+const al1 = document.getElementById('alert1');
+const al2 = document.getElementById('alert2');
 function validateDocx(file) {
     return file.arrayBuffer() // Read the file as an ArrayBuffer
         .then((arrayBuffer) => JSZip.loadAsync(arrayBuffer)) // Load it as a ZIP file
@@ -35,6 +36,7 @@ fileUpload.addEventListener('change', async function () {
         alert('Please upload only .docx files');
         metadataDiv.value = '';
         this.value = '';
+        return;
     }
     const fileSizeInKB = (file.size / 1024).toFixed(2); // File size in KB
     const lastModified = new Date(file.lastModified).toLocaleString(); // Last modified date
@@ -55,8 +57,9 @@ Last Modified: ${lastModified}
             alert('The uploaded .docx file is corrupted or invalid. Please upload a valid file.');
             this.value = ''; // Clear the file input
             metadataDiv.value = '';
+            return;
         } else {
-            al.textContent = ('File is valid and ready for upload.');
+            al1.textContent = ('File is valid and ready for upload.');
         }
     });
 });
@@ -84,7 +87,7 @@ form.addEventListener('submit', async function (e) {
 
     const formData = new FormData();
     formData.append('file', fileUpload.files[0]);
-    al.textContent = ('Please wait, Download for your converted file will begin shortly.')
+    al2.textContent = ('Please wait, Download for your converted file will begin shortly.')
     if (checkbox.checked) {
         formData.append('password', passwordInput.value); // Appending password here
     }
