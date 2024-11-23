@@ -28,19 +28,25 @@ fileUpload.addEventListener('change', async function () {
     const file = this.files[0];
     const metadataDiv = document.getElementById('fileMetadata');
     if (!file) {
+        al1.textContent = '';
+        al2.textContent = '';
         metadataDiv.value = '';
         this.value = '';// Clear metadata if no file is selected
         return;
     }
     if (file && !file.name.endsWith('.docx')) {
-        alert('Please upload only .docx files');
+        al1.textContent = '';
+        al2.textContent = '';
         metadataDiv.value = '';
         this.value = '';
+        alert('Please upload only .docx files');
         return;
     }
     const fileSizeInKB = (file.size / 1024).toFixed(2); // File size in KB
     const lastModified = new Date(file.lastModified).toLocaleString(); // Last modified date
     if (fileSizeInKB > 10100) {
+        al1.textContent = '';
+        al2.textContent = '';
         this.value = '';
         metadataDiv.value = '';
         alert('file exceed the permitted size of 10MB');
@@ -54,9 +60,11 @@ Last Modified: ${lastModified}
 
     validateDocx(file).then((isValid) => {
         if (!isValid) {
-            alert('The uploaded .docx file is corrupted or invalid. Please upload a valid file.');
             this.value = ''; // Clear the file input
             metadataDiv.value = '';
+            al1.textContent = '';
+            al2.textContent = '';
+            alert('The uploaded .docx file is corrupted or invalid. Please upload a valid file.');
             return;
         } else {
             al1.textContent = ('File is valid and ready for upload.');
@@ -76,11 +84,19 @@ form.addEventListener('submit', async function (e) {
     btns.disabled = true;
     btns.textContent = 'Processing...';
     if (!fileUpload.files[0]) {
+        metadataDiv.value = '';
+        al1.textContent = '';
+        al2.textContent = '';
+        btns.disabled = false;
+        btns.textContent = 'Convert to PDF';
         alert('Please select a file to convert');
         return;
     }
 
     if (checkbox.checked && (!passwordInput.value || passwordInput.value.length < 6)) {
+        al2.textContent = '';
+        btns.disabled = false;
+        btns.textContent = 'Convert to PDF';
         alert('Please enter a password with at least 6 characters');
         return;
     }
@@ -116,9 +132,16 @@ form.addEventListener('submit', async function (e) {
         form.reset();
         passwordInput.disabled = true;
         btns.disabled = false;
-        btns.textContent = 'Submit';
+        btns.textContent = 'Convert to PDF';
+        al1.textContent = '';
+        al2.textContent = '';
 
     } catch (error) {
         alert('Error converting file: ' + error.message);
+    }
+    finally{
+        al1.textContent = '';
+        al2.textContent = '';
+        form.reset();
     }
 });
