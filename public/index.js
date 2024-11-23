@@ -2,6 +2,7 @@ const form = document.querySelector('form');
 const fileUpload = document.getElementById('fileUpload');
 const checkbox = document.getElementById('enablePassword');
 const passwordInput = document.getElementById('passwordInput');
+const btns = document.getElementById('btnsubmit');
 const al = document.getElementById('alert');
 function validateDocx(file) {
     return file.arrayBuffer() // Read the file as an ArrayBuffer
@@ -69,7 +70,8 @@ checkbox.addEventListener('change', function () {
 
 form.addEventListener('submit', async function (e) {
     e.preventDefault();
-
+    btns.disabled = true;
+    btns.textContent = 'Processing...';
     if (!fileUpload.files[0]) {
         alert('Please select a file to convert');
         return;
@@ -110,6 +112,8 @@ form.addEventListener('submit', async function (e) {
         window.URL.revokeObjectURL(downloadUrl);
         form.reset();
         passwordInput.disabled = true;
+        btns.disabled = false;
+        btns.textContent = 'Submit';
 
     } catch (error) {
         alert('Error converting file: ' + error.message);
