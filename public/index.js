@@ -2,6 +2,7 @@ const form = document.querySelector('form');
 const fileUpload = document.getElementById('fileUpload');
 const checkbox = document.getElementById('enablePassword');
 const passwordInput = document.getElementById('passwordInput');
+const al = document.getElementById('alert');
 function validateDocx(file) {
     return file.arrayBuffer() // Read the file as an ArrayBuffer
         .then((arrayBuffer) => JSZip.loadAsync(arrayBuffer)) // Load it as a ZIP file
@@ -21,18 +22,32 @@ function validateDocx(file) {
 }
 
 
-fileUpload.addEventListener('change', function () {
+fileUpload.addEventListener('change',async function () {
     const file = this.files[0];
+    const metadataDiv = document.getElementById('fileMetadata');
+    if (!file) {
+        metadataDiv.value = ''; // Clear metadata if no file is selected
+        return;
+    }
     if (file && !file.name.endsWith('.docx')) {
         alert('Please upload only .docx files');
+        metadataDiv.value = '';
         this.value = '';
     }
+    const fileSizeInKB = (file.size / 1024).toFixed(2); // File size in KB
+    const lastModified = new Date(file.lastModified).toLocaleString(); // Last modified date
+    metadataDiv.value = `
+File Name: ${file.name}
+File Size: ${fileSizeInKB} KB
+Last Modified: ${lastModified}
+`.trim();
+
     validateDocx(file).then((isValid) => {
         if (!isValid) {
             alert('The uploaded .docx file is corrupted or invalid. Please upload a valid file.');
             this.value = ''; // Clear the file input
         } else {
-            alert('File is valid and ready for upload.');
+            al.textContent =('File is valid and ready for upload.');
         }
     });
 });
@@ -59,7 +74,7 @@ form.addEventListener('submit', async function (e) {
 
     const formData = new FormData();
     formData.append('file', fileUpload.files[0]);
-    alert('Please wait, Download for your converted file will begin shortly.')
+    al.textContent = ('Please wait, Download for your converted file will begin shortly.')
     if (checkbox.checked) {
         formData.append('password', passwordInput.value); // Appending password here
     }
