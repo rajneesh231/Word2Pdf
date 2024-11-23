@@ -22,11 +22,12 @@ function validateDocx(file) {
 }
 
 
-fileUpload.addEventListener('change',async function () {
+fileUpload.addEventListener('change', async function () {
     const file = this.files[0];
     const metadataDiv = document.getElementById('fileMetadata');
     if (!file) {
-        metadataDiv.value = ''; // Clear metadata if no file is selected
+        metadataDiv.value = '';
+        this.value = '';// Clear metadata if no file is selected
         return;
     }
     if (file && !file.name.endsWith('.docx')) {
@@ -36,6 +37,12 @@ fileUpload.addEventListener('change',async function () {
     }
     const fileSizeInKB = (file.size / 1024).toFixed(2); // File size in KB
     const lastModified = new Date(file.lastModified).toLocaleString(); // Last modified date
+    if (fileSizeInKB > 10100) {
+        this.value = '';
+        metadataDiv.value = '';
+        alert('file exceed the permitted size of 10MB');
+        return;
+    }
     metadataDiv.value = `
 File Name: ${file.name}
 File Size: ${fileSizeInKB} KB
@@ -46,8 +53,9 @@ Last Modified: ${lastModified}
         if (!isValid) {
             alert('The uploaded .docx file is corrupted or invalid. Please upload a valid file.');
             this.value = ''; // Clear the file input
+            metadataDiv.value = '';
         } else {
-            al.textContent =('File is valid and ready for upload.');
+            al.textContent = ('File is valid and ready for upload.');
         }
     });
 });
