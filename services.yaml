@@ -1,0 +1,25 @@
+# deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: word2pdf
+  labels:
+    app: word2pdf
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: word2pdf
+  template:
+    metadata:
+      labels:
+        app: word2pdf
+    spec:
+      containers:
+        - name: word2pdf
+          image: rajneesh768/word2pdf:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NODE_ENV
+              value: production
