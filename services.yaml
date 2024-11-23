@@ -1,25 +1,12 @@
-# deployment.yaml
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: Service
 metadata:
-  name: word2pdf
-  labels:
-    app: word2pdf
+  name: nodejs-service
 spec:
-  replicas: 2
+  type: NodePort
   selector:
-    matchLabels:
-      app: word2pdf
-  template:
-    metadata:
-      labels:
-        app: word2pdf
-    spec:
-      containers:
-        - name: word2pdf
-          image: rajneesh768/word2pdf:latest
-          ports:
-            - containerPort: 3000
-          env:
-            - name: NODE_ENV
-              value: production
+    app: word2pdf
+  ports:
+    - port: 80
+      targetPort: 3000
+      nodePort: 30080 # Ensure this port is open in your EC2 security group
