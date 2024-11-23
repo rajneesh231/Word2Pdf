@@ -5,6 +5,7 @@ const passwordInput = document.getElementById('passwordInput');
 const btns = document.getElementById('btnsubmit');
 const al1 = document.getElementById('alert1');
 const al2 = document.getElementById('alert2');
+const metadataDiv = document.getElementById('fileMetadata');
 function validateDocx(file) {
     return file.arrayBuffer() // Read the file as an ArrayBuffer
         .then((arrayBuffer) => JSZip.loadAsync(arrayBuffer)) // Load it as a ZIP file
@@ -26,7 +27,7 @@ function validateDocx(file) {
 
 fileUpload.addEventListener('change', async function () {
     const file = this.files[0];
-    const metadataDiv = document.getElementById('fileMetadata');
+
     if (!file) {
         al1.textContent = '';
         al2.textContent = '';
@@ -92,7 +93,6 @@ form.addEventListener('submit', async function (e) {
         alert('Please select a file to convert');
         return;
     }
-
     if (checkbox.checked && (!passwordInput.value || passwordInput.value.length < 6)) {
         al2.textContent = '';
         btns.disabled = false;
@@ -139,7 +139,7 @@ form.addEventListener('submit', async function (e) {
     } catch (error) {
         alert('Error converting file: ' + error.message);
     }
-    finally{
+    finally {
         al1.textContent = '';
         al2.textContent = '';
         form.reset();
