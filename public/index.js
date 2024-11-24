@@ -6,6 +6,49 @@ const btns = document.getElementById('btnsubmit');
 const al1 = document.getElementById('alert1');
 const al2 = document.getElementById('alert2');
 const metadataDiv = document.getElementById('fileMetadata');
+
+async function extractNumberOfPages(file) {
+    const arrayBuffer = await file.arrayBuffer();
+    const zip = await JSZip.loadAsync(arrayBuffer);
+
+    const appXml = await zip.file('docProps/app.xml')?.async('text');
+
+
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(appXml, 'text/xml');
+    const pagesElement = xmlDoc.querySelector('Pages');
+
+    return pagesElement?.textContent || null;
+}
+async function extractauthor(file) {
+    const arrayBuffer = await file.arrayBuffer();
+    const zip = await JSZip.loadAsync(arrayBuffer);
+    const appXml = await zip.file('docProps/core.xml')?.async('text');
+
+
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(appXml, 'text/xml');
+    const namespaces = {
+        dc: 'http://purl.org/dc/elements/1.1/',
+        cp: 'http://schemas.openxmlformats.org/package/2006/metadata/core-properties',
+        dcterms: 'http://purl.org/dc/terms/',
+    };
+
+    // Extract properties
+    const props = {};
+    props.author =
+        xmlDoc.getElementsByTagNameNS(namespaces.dc, 'creator')[0]?.textContent || null;
+    props.lastmodifiedby =
+        xmlDoc.getElementsByTagNameNS(namespaces.cp, 'lastModifiedBy')[0]?.textContent || null;
+    props.createdon =
+        xmlDoc.getElementsByTagNameNS(namespaces.dcterms, 'created')[0]?.textContent || null;
+    // props.author = xmlDoc.querySelector('dc:creator')?.textContent || null;
+    // props.lastmodifiedby = xmlDoc.querySelector('cp:lastModifiedBy')?.textContent || null;
+    // props.createdon = xmlDoc.querySelector('dcterms:created')?.textContent || null;
+
+    return props;
+}
+
 function validateDocx(file) {
     return file.arrayBuffer() // Read the file as an ArrayBuffer
         .then((arrayBuffer) => JSZip.loadAsync(arrayBuffer)) // Load it as a ZIP file
@@ -53,11 +96,23 @@ fileUpload.addEventListener('change', async function () {
         alert('file exceed the permitted size of 10MB');
         return;
     }
-    metadataDiv.value = `
+    try {
+        const numPages = await extractNumberOfPages(file);
+        const props =await extractauthor(file);
+        metadataDiv.value = `
 File Name: ${file.name}
 File Size: ${fileSizeInKB} KB
-Last Modified: ${lastModified}
+Created By: ${props.author || 'Not Found'}
+Created On: ${props.createdon || 'Not Found'}
+Last Modified By: ${props.lastmodifiedby || 'Not Found'}
+Last Modified On: ${lastModified}
+Number of Pages: ${numPages || 'Not Found'}
 `.trim();
+        al1.textContent = 'File is valid and ready for upload.';
+    } catch (error) {
+        metadataDiv.value = '';
+        alert(`Error processing file: ${error.message}`);
+    }
 
     validateDocx(file).then((isValid) => {
         if (!isValid) {
