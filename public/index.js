@@ -103,7 +103,7 @@ fileUpload.addEventListener('change', async function () {
 File Name: ${file.name}
 File Size: ${fileSizeInKB} KB
 Created By: ${props.author || 'Not Found'}
-Created On: ${props.createdon || 'Not Found'}
+Created On: ${ new Date(props.createdon).toLocaleString() || 'Not Found'}
 Last Modified By: ${props.lastmodifiedby || 'Not Found'}
 Last Modified On: ${lastModified}
 Number of Pages: ${numPages || 'Not Found'}
