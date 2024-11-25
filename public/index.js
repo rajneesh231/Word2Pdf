@@ -97,6 +97,23 @@ fileUpload.addEventListener('change', async function () {
         return;
     }
     try {
+        const isValid = await validateDocx(file);
+        if (!isValid) {
+            this.value = ''; // Clear the file input
+            metadataDiv.value = '';
+            al1.textContent = '';
+            al2.textContent = '';
+            alert('The uploaded .docx file is corrupted or invalid. Please upload a valid file.');
+            return; // Exit only if file is invalid
+        }
+        al1.textContent = 'File is valid and ready for upload.';
+    } catch (error) {
+        console.error(error);
+        alert('An error occurred while validating the file.');
+        return; // Exit if validation throws an error
+    }
+
+    try {
         const numPages = await extractNumberOfPages(file);
         const props =await extractauthor(file);
         metadataDiv.value = `
@@ -113,19 +130,6 @@ Number of Pages: ${numPages || 'Not Found'}
         metadataDiv.value = '';
         alert(`Error processing file: ${error.message}`);
     }
-
-    validateDocx(file).then((isValid) => {
-        if (!isValid) {
-            this.value = ''; // Clear the file input
-            metadataDiv.value = '';
-            al1.textContent = '';
-            al2.textContent = '';
-            alert('The uploaded .docx file is corrupted or invalid. Please upload a valid file.');
-            return;
-        } else {
-            al1.textContent = ('File is valid and ready for upload.');
-        }
-    });
 });
 
 checkbox.addEventListener('change', function () {
